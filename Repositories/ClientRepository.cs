@@ -1,13 +1,13 @@
-using RealEstate_App.Models;
+using RealEstateAgency.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace RealEstate_App.Repositories
+namespace RealEstateAgency.Repositories
 {
     public class ClientRepository
     {
-        private string _connectionString = "Data Source=.\\SQLEXPRESS;Initial Catalog=RealEstateAppDB;Integrated Security=True";
+        private string _connectionString = "Data Source=.\\SQLEXPRESS;Initial Catalog=RealEstateAgencyDB;Integrated Security=True";
 
         public List<Client> GetAll()
         {

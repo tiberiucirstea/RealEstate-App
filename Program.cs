@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RealEstate_App
+namespace RealEstateAgency
 {
     internal static class Program
     {

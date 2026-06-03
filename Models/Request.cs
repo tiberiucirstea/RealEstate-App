@@ -1,8 +1,8 @@
-﻿using RealEstate_App;
-using RealEstate_App.Models;
+﻿using RealEstateAgency;
+using RealEstateAgency.Models;
 using System;
 
-namespace RealEstate_App.Models
+namespace RealEstateAgency.Models
 {
     public class Request
     {

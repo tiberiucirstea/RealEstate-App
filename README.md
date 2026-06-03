@@ -40,7 +40,7 @@ RealEstate-App/
 
 ## Database Setup
 
-Connect to SQL Server Express, create the database `RealEstateAppDB`, then run:
+Connect to SQL Server Express, create the database `RealEstateAgencyDB`, then run:
 
 ```sql
 CREATE TABLE [dbo].[Clients] (

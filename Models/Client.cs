@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RealEstate_App.Models
+namespace RealEstateAgency.Models
 {
     public class Client
     {

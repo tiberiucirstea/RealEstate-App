@@ -1,4 +1,4 @@
-﻿namespace RealEstate_App
+﻿namespace RealEstateAgency
 {
     public enum PropertyType
     {
