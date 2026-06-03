@@ -2,8 +2,6 @@
 
 A Windows desktop application for managing the core operations of a real estate agency — properties, clients, requests, and offers.
 
-> 🚧 Work in progress
-
 ---
 
 ## Tech Stack
@@ -14,33 +12,39 @@ A Windows desktop application for managing the core operations of a real estate 
 | UI | Windows Forms |
 | Database | SQL Server Express |
 | Data access | ADO.NET |
-| Architecture | Repository pattern (separate repository class per entity) |
+| Architecture | Repository pattern |
 
 ---
 
-## Project Structure
+## Features
 
-```
-RealEstate-App/
-├── Models/
-│   ├── Client.cs
-│   ├── Property.cs
-│   ├── Request.cs
-│   └── Offer.cs
-├── Repositories/
-│   ├── ClientRepository.cs
-│   ├── PropertyRepository.cs
-│   ├── RequestRepository.cs
-│   └── OfferRepository.cs
-├── Enums.cs               # PropertyType, TransactionType, RequestStatus, OfferStatus, PropertyStatus
-└── Program.cs             # Entry point
-```
+**Properties** — Add, edit, delete properties. Filter by type (Apartment, House, Commercial Space). Each property has a type, address, city, area, price, transaction type (Sale/Rental) and status (Available, Sold, Rented).
+
+**Clients** — Add, edit, delete clients with full name, phone and email validation.
+
+**Requests** — Add, edit, delete client requests. Each request specifies the desired property type, transaction type, max budget, city and status. Filter by status (Active, Resolved, Cancelled). Client is selected via live search.
+
+**Offers** — Add, edit, delete offers linking a client to a property. Filter by status (Proposed, Accepted, Rejected). When an offer is accepted, the property status is automatically updated (Sold/Rented) and the client's active requests are resolved.
 
 ---
 
-## Database Setup
+## Getting Started
 
-Connect to SQL Server Express, create the database `RealEstateAgencyDB`, then run:
+### Prerequisites
+
+- [Visual Studio 2022+](https://visualstudio.microsoft.com/) with .NET desktop development workload
+- [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+
+### Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/tiberiucirstea/RealEstateAgency-App.git
+   ```
+
+2. Open `RealEstateAgency-App.sln` in Visual Studio
+
+3. Set up the database — connect to SQL Server Express, create the database `RealEstateAgencyDB`, then run:
 
 ```sql
 CREATE TABLE [dbo].[Clients] (
@@ -82,13 +86,26 @@ CREATE TABLE [dbo].[Offers] (
 );
 ```
 
+4. Build and run the project
+
 ---
 
-## Data Models
+## Project Structure
 
-| Model | Key Fields |
-|---|---|
-| `Client` | LastName, FirstName, Phone, Email |
-| `Property` | Type, Address, City, Area (sqm), Price, TransactionType, Status |
-| `Request` | Client, PropertyType, TransactionType, MaxBudget, City, Status, RequestDate |
-| `Offer` | Client, Property, OfferDate, Status |
+```
+RealEstateAgency-App/
+├── Models/
+│   ├── Client.cs
+│   ├── Property.cs
+│   ├── Request.cs
+│   └── Offer.cs
+├── Repositories/
+│   ├── ClientRepository.cs
+│   ├── PropertyRepository.cs
+│   ├── RequestRepository.cs
+│   └── OfferRepository.cs
+├── Enums.cs
+├── MainForm.cs
+├── MainForm.Designer.cs
+└── Program.cs
+```
