@@ -73,6 +73,29 @@ namespace RealEstateAgency
             this.btnSaveClient = new System.Windows.Forms.Button();
             this.btnCancelClient = new System.Windows.Forms.Button();
             this.pnlRequests = new System.Windows.Forms.Panel();
+            this.btnAddRequest = new System.Windows.Forms.Button();
+            this.btnEditRequest = new System.Windows.Forms.Button();
+            this.btnDeleteRequest = new System.Windows.Forms.Button();
+            this.cmbFilterStatus = new System.Windows.Forms.ComboBox();
+            this.dgvRequests = new System.Windows.Forms.DataGridView();
+            this.pnlRequestForm = new System.Windows.Forms.Panel();
+            this.lblSearchClient = new System.Windows.Forms.Label();
+            this.txtSearchClient = new System.Windows.Forms.TextBox();
+            this.lstRequestClients = new System.Windows.Forms.ListBox();
+            this.lblReqPropType = new System.Windows.Forms.Label();
+            this.cmbReqPropType = new System.Windows.Forms.ComboBox();
+            this.lblReqTransaction = new System.Windows.Forms.Label();
+            this.cmbReqTransaction = new System.Windows.Forms.ComboBox();
+            this.lblReqMaxBudget = new System.Windows.Forms.Label();
+            this.numReqMaxBudget = new System.Windows.Forms.NumericUpDown();
+            this.lblReqCity = new System.Windows.Forms.Label();
+            this.txtReqCity = new System.Windows.Forms.TextBox();
+            this.lblReqStatus = new System.Windows.Forms.Label();
+            this.cmbReqStatus = new System.Windows.Forms.ComboBox();
+            this.lblReqDate = new System.Windows.Forms.Label();
+            this.dtpReqDate = new System.Windows.Forms.DateTimePicker();
+            this.btnSaveRequest = new System.Windows.Forms.Button();
+            this.btnCancelRequest = new System.Windows.Forms.Button();
             this.pnlOffers = new System.Windows.Forms.Panel();
             this.pnlSidebar.SuspendLayout();
             this.pnlContent.SuspendLayout();
@@ -80,10 +103,14 @@ namespace RealEstateAgency
             this.pnlPropertyForm.SuspendLayout();
             this.pnlClients.SuspendLayout();
             this.pnlClientForm.SuspendLayout();
+            this.pnlRequests.SuspendLayout();
+            this.pnlRequestForm.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropArea)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropPrice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClients)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numReqMaxBudget)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRequests)).BeginInit();
             this.SuspendLayout();
             //
             // pnlSidebar
@@ -666,12 +693,297 @@ namespace RealEstateAgency
             // pnlRequests
             //
             this.pnlRequests.BackColor = System.Drawing.Color.White;
+            this.pnlRequests.Controls.Add(this.pnlRequestForm);
+            this.pnlRequests.Controls.Add(this.dgvRequests);
+            this.pnlRequests.Controls.Add(this.cmbFilterStatus);
+            this.pnlRequests.Controls.Add(this.btnDeleteRequest);
+            this.pnlRequests.Controls.Add(this.btnEditRequest);
+            this.pnlRequests.Controls.Add(this.btnAddRequest);
             this.pnlRequests.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRequests.Location = new System.Drawing.Point(0, 0);
             this.pnlRequests.Name = "pnlRequests";
             this.pnlRequests.Size = new System.Drawing.Size(1000, 700);
             this.pnlRequests.TabIndex = 2;
             this.pnlRequests.Visible = false;
+            //
+            // btnAddRequest
+            //
+            this.btnAddRequest.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnAddRequest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAddRequest.FlatAppearance.BorderSize = 0;
+            this.btnAddRequest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddRequest.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnAddRequest.ForeColor = System.Drawing.Color.White;
+            this.btnAddRequest.Location = new System.Drawing.Point(15, 15);
+            this.btnAddRequest.Name = "btnAddRequest";
+            this.btnAddRequest.Size = new System.Drawing.Size(110, 38);
+            this.btnAddRequest.TabIndex = 0;
+            this.btnAddRequest.Text = "Add";
+            this.btnAddRequest.UseVisualStyleBackColor = false;
+            this.btnAddRequest.Click += new System.EventHandler(this.btnAddRequest_Click);
+            //
+            // btnEditRequest
+            //
+            this.btnEditRequest.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnEditRequest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEditRequest.Enabled = false;
+            this.btnEditRequest.FlatAppearance.BorderSize = 0;
+            this.btnEditRequest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEditRequest.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnEditRequest.ForeColor = System.Drawing.Color.White;
+            this.btnEditRequest.Location = new System.Drawing.Point(135, 15);
+            this.btnEditRequest.Name = "btnEditRequest";
+            this.btnEditRequest.Size = new System.Drawing.Size(110, 38);
+            this.btnEditRequest.TabIndex = 1;
+            this.btnEditRequest.Text = "Edit";
+            this.btnEditRequest.UseVisualStyleBackColor = false;
+            this.btnEditRequest.Click += new System.EventHandler(this.btnEditRequest_Click);
+            //
+            // btnDeleteRequest
+            //
+            this.btnDeleteRequest.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnDeleteRequest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDeleteRequest.Enabled = false;
+            this.btnDeleteRequest.FlatAppearance.BorderSize = 0;
+            this.btnDeleteRequest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeleteRequest.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnDeleteRequest.ForeColor = System.Drawing.Color.White;
+            this.btnDeleteRequest.Location = new System.Drawing.Point(255, 15);
+            this.btnDeleteRequest.Name = "btnDeleteRequest";
+            this.btnDeleteRequest.Size = new System.Drawing.Size(110, 38);
+            this.btnDeleteRequest.TabIndex = 2;
+            this.btnDeleteRequest.Text = "Delete";
+            this.btnDeleteRequest.UseVisualStyleBackColor = false;
+            this.btnDeleteRequest.Click += new System.EventHandler(this.btnDeleteRequest_Click);
+            //
+            // cmbFilterStatus
+            //
+            this.cmbFilterStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.cmbFilterStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFilterStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbFilterStatus.Location = new System.Drawing.Point(780, 22);
+            this.cmbFilterStatus.Name = "cmbFilterStatus";
+            this.cmbFilterStatus.Size = new System.Drawing.Size(200, 23);
+            this.cmbFilterStatus.TabIndex = 3;
+            this.cmbFilterStatus.SelectedIndexChanged += new System.EventHandler(this.cmbFilterStatus_SelectedIndexChanged);
+            //
+            // dgvRequests
+            //
+            this.dgvRequests.AllowUserToAddRows = false;
+            this.dgvRequests.AllowUserToDeleteRows = false;
+            this.dgvRequests.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvRequests.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvRequests.BackgroundColor = System.Drawing.Color.White;
+            this.dgvRequests.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvRequests.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.dgvRequests.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dgvRequests.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRequests.Location = new System.Drawing.Point(10, 65);
+            this.dgvRequests.MultiSelect = false;
+            this.dgvRequests.Name = "dgvRequests";
+            this.dgvRequests.ReadOnly = true;
+            this.dgvRequests.RowHeadersVisible = false;
+            this.dgvRequests.RowTemplate.Height = 28;
+            this.dgvRequests.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvRequests.Size = new System.Drawing.Size(975, 415);
+            this.dgvRequests.TabIndex = 4;
+            this.dgvRequests.SelectionChanged += new System.EventHandler(this.dgvRequests_SelectionChanged);
+            //
+            // pnlRequestForm
+            //
+            this.pnlRequestForm.BackColor = System.Drawing.Color.FromArgb(240, 244, 248);
+            this.pnlRequestForm.Controls.Add(this.lblSearchClient);
+            this.pnlRequestForm.Controls.Add(this.txtSearchClient);
+            this.pnlRequestForm.Controls.Add(this.lstRequestClients);
+            this.pnlRequestForm.Controls.Add(this.lblReqPropType);
+            this.pnlRequestForm.Controls.Add(this.cmbReqPropType);
+            this.pnlRequestForm.Controls.Add(this.lblReqTransaction);
+            this.pnlRequestForm.Controls.Add(this.cmbReqTransaction);
+            this.pnlRequestForm.Controls.Add(this.lblReqMaxBudget);
+            this.pnlRequestForm.Controls.Add(this.numReqMaxBudget);
+            this.pnlRequestForm.Controls.Add(this.lblReqCity);
+            this.pnlRequestForm.Controls.Add(this.txtReqCity);
+            this.pnlRequestForm.Controls.Add(this.lblReqStatus);
+            this.pnlRequestForm.Controls.Add(this.cmbReqStatus);
+            this.pnlRequestForm.Controls.Add(this.lblReqDate);
+            this.pnlRequestForm.Controls.Add(this.dtpReqDate);
+            this.pnlRequestForm.Controls.Add(this.btnSaveRequest);
+            this.pnlRequestForm.Controls.Add(this.btnCancelRequest);
+            this.pnlRequestForm.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlRequestForm.Location = new System.Drawing.Point(0, 450);
+            this.pnlRequestForm.Name = "pnlRequestForm";
+            this.pnlRequestForm.Size = new System.Drawing.Size(1000, 250);
+            this.pnlRequestForm.TabIndex = 5;
+            this.pnlRequestForm.Visible = false;
+            //
+            // lblSearchClient
+            //
+            this.lblSearchClient.AutoSize = true;
+            this.lblSearchClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblSearchClient.Location = new System.Drawing.Point(15, 15);
+            this.lblSearchClient.Name = "lblSearchClient";
+            this.lblSearchClient.TabIndex = 0;
+            this.lblSearchClient.Text = "Search client:";
+            //
+            // txtSearchClient
+            //
+            this.txtSearchClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtSearchClient.Location = new System.Drawing.Point(15, 35);
+            this.txtSearchClient.Name = "txtSearchClient";
+            this.txtSearchClient.Size = new System.Drawing.Size(180, 23);
+            this.txtSearchClient.TabIndex = 1;
+            this.txtSearchClient.TextChanged += new System.EventHandler(this.txtSearchClient_TextChanged);
+            //
+            // lstRequestClients
+            //
+            this.lstRequestClients.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lstRequestClients.FormattingEnabled = true;
+            this.lstRequestClients.ItemHeight = 15;
+            this.lstRequestClients.Location = new System.Drawing.Point(15, 70);
+            this.lstRequestClients.Name = "lstRequestClients";
+            this.lstRequestClients.Size = new System.Drawing.Size(180, 154);
+            this.lstRequestClients.TabIndex = 2;
+            this.lstRequestClients.SelectedIndexChanged += new System.EventHandler(this.lstRequestClients_SelectedIndexChanged);
+            //
+            // lblReqPropType
+            //
+            this.lblReqPropType.AutoSize = true;
+            this.lblReqPropType.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblReqPropType.Location = new System.Drawing.Point(215, 15);
+            this.lblReqPropType.Name = "lblReqPropType";
+            this.lblReqPropType.TabIndex = 3;
+            this.lblReqPropType.Text = "Property type:";
+            //
+            // cmbReqPropType
+            //
+            this.cmbReqPropType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbReqPropType.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbReqPropType.Location = new System.Drawing.Point(215, 35);
+            this.cmbReqPropType.Name = "cmbReqPropType";
+            this.cmbReqPropType.Size = new System.Drawing.Size(160, 23);
+            this.cmbReqPropType.TabIndex = 4;
+            //
+            // lblReqTransaction
+            //
+            this.lblReqTransaction.AutoSize = true;
+            this.lblReqTransaction.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblReqTransaction.Location = new System.Drawing.Point(390, 15);
+            this.lblReqTransaction.Name = "lblReqTransaction";
+            this.lblReqTransaction.TabIndex = 5;
+            this.lblReqTransaction.Text = "Transaction type:";
+            //
+            // cmbReqTransaction
+            //
+            this.cmbReqTransaction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbReqTransaction.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbReqTransaction.Location = new System.Drawing.Point(390, 35);
+            this.cmbReqTransaction.Name = "cmbReqTransaction";
+            this.cmbReqTransaction.Size = new System.Drawing.Size(160, 23);
+            this.cmbReqTransaction.TabIndex = 6;
+            //
+            // lblReqMaxBudget
+            //
+            this.lblReqMaxBudget.AutoSize = true;
+            this.lblReqMaxBudget.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblReqMaxBudget.Location = new System.Drawing.Point(565, 15);
+            this.lblReqMaxBudget.Name = "lblReqMaxBudget";
+            this.lblReqMaxBudget.TabIndex = 7;
+            this.lblReqMaxBudget.Text = "Max budget:";
+            //
+            // numReqMaxBudget
+            //
+            this.numReqMaxBudget.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.numReqMaxBudget.Location = new System.Drawing.Point(565, 35);
+            this.numReqMaxBudget.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
+            this.numReqMaxBudget.Name = "numReqMaxBudget";
+            this.numReqMaxBudget.Size = new System.Drawing.Size(140, 23);
+            this.numReqMaxBudget.TabIndex = 8;
+            //
+            // lblReqCity
+            //
+            this.lblReqCity.AutoSize = true;
+            this.lblReqCity.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblReqCity.Location = new System.Drawing.Point(215, 120);
+            this.lblReqCity.Name = "lblReqCity";
+            this.lblReqCity.TabIndex = 9;
+            this.lblReqCity.Text = "City:";
+            //
+            // txtReqCity
+            //
+            this.txtReqCity.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtReqCity.Location = new System.Drawing.Point(215, 140);
+            this.txtReqCity.Name = "txtReqCity";
+            this.txtReqCity.Size = new System.Drawing.Size(160, 23);
+            this.txtReqCity.TabIndex = 10;
+            //
+            // lblReqStatus
+            //
+            this.lblReqStatus.AutoSize = true;
+            this.lblReqStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblReqStatus.Location = new System.Drawing.Point(390, 120);
+            this.lblReqStatus.Name = "lblReqStatus";
+            this.lblReqStatus.TabIndex = 11;
+            this.lblReqStatus.Text = "Status:";
+            //
+            // cmbReqStatus
+            //
+            this.cmbReqStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbReqStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbReqStatus.Location = new System.Drawing.Point(390, 140);
+            this.cmbReqStatus.Name = "cmbReqStatus";
+            this.cmbReqStatus.Size = new System.Drawing.Size(160, 23);
+            this.cmbReqStatus.TabIndex = 12;
+            //
+            // lblReqDate
+            //
+            this.lblReqDate.AutoSize = true;
+            this.lblReqDate.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblReqDate.Location = new System.Drawing.Point(565, 120);
+            this.lblReqDate.Name = "lblReqDate";
+            this.lblReqDate.TabIndex = 13;
+            this.lblReqDate.Text = "Request date:";
+            //
+            // dtpReqDate
+            //
+            this.dtpReqDate.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dtpReqDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpReqDate.Location = new System.Drawing.Point(565, 140);
+            this.dtpReqDate.Name = "dtpReqDate";
+            this.dtpReqDate.Size = new System.Drawing.Size(140, 23);
+            this.dtpReqDate.TabIndex = 14;
+            //
+            // btnSaveRequest
+            //
+            this.btnSaveRequest.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnSaveRequest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSaveRequest.FlatAppearance.BorderSize = 0;
+            this.btnSaveRequest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSaveRequest.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSaveRequest.ForeColor = System.Drawing.Color.White;
+            this.btnSaveRequest.Location = new System.Drawing.Point(840, 195);
+            this.btnSaveRequest.Name = "btnSaveRequest";
+            this.btnSaveRequest.Size = new System.Drawing.Size(110, 35);
+            this.btnSaveRequest.TabIndex = 16;
+            this.btnSaveRequest.Text = "Save";
+            this.btnSaveRequest.UseVisualStyleBackColor = false;
+            this.btnSaveRequest.Click += new System.EventHandler(this.btnSaveRequest_Click);
+            //
+            // btnCancelRequest
+            //
+            this.btnCancelRequest.BackColor = System.Drawing.Color.FromArgb(120, 144, 156);
+            this.btnCancelRequest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCancelRequest.FlatAppearance.BorderSize = 0;
+            this.btnCancelRequest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelRequest.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnCancelRequest.ForeColor = System.Drawing.Color.White;
+            this.btnCancelRequest.Location = new System.Drawing.Point(720, 195);
+            this.btnCancelRequest.Name = "btnCancelRequest";
+            this.btnCancelRequest.Size = new System.Drawing.Size(110, 35);
+            this.btnCancelRequest.TabIndex = 15;
+            this.btnCancelRequest.Text = "Cancel";
+            this.btnCancelRequest.UseVisualStyleBackColor = false;
+            this.btnCancelRequest.Click += new System.EventHandler(this.btnCancelRequest_Click);
             //
             // pnlOffers
             //
@@ -699,12 +1011,17 @@ namespace RealEstateAgency
             ((System.ComponentModel.ISupportInitialize)(this.numPropArea)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropPrice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClients)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numReqMaxBudget)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRequests)).EndInit();
             this.pnlPropertyForm.ResumeLayout(false);
             this.pnlPropertyForm.PerformLayout();
             this.pnlClientForm.ResumeLayout(false);
             this.pnlClientForm.PerformLayout();
+            this.pnlRequestForm.ResumeLayout(false);
+            this.pnlRequestForm.PerformLayout();
             this.pnlProperties.ResumeLayout(false);
             this.pnlClients.ResumeLayout(false);
+            this.pnlRequests.ResumeLayout(false);
             this.pnlSidebar.ResumeLayout(false);
             this.pnlContent.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -757,6 +1074,29 @@ namespace RealEstateAgency
         private System.Windows.Forms.Button btnSaveClient;
         private System.Windows.Forms.Button btnCancelClient;
         private System.Windows.Forms.Panel pnlRequests;
+        private System.Windows.Forms.Button btnAddRequest;
+        private System.Windows.Forms.Button btnEditRequest;
+        private System.Windows.Forms.Button btnDeleteRequest;
+        private System.Windows.Forms.ComboBox cmbFilterStatus;
+        private System.Windows.Forms.DataGridView dgvRequests;
+        private System.Windows.Forms.Panel pnlRequestForm;
+        private System.Windows.Forms.Label lblSearchClient;
+        private System.Windows.Forms.TextBox txtSearchClient;
+        private System.Windows.Forms.ListBox lstRequestClients;
+        private System.Windows.Forms.Label lblReqPropType;
+        private System.Windows.Forms.ComboBox cmbReqPropType;
+        private System.Windows.Forms.Label lblReqTransaction;
+        private System.Windows.Forms.ComboBox cmbReqTransaction;
+        private System.Windows.Forms.Label lblReqMaxBudget;
+        private System.Windows.Forms.NumericUpDown numReqMaxBudget;
+        private System.Windows.Forms.Label lblReqCity;
+        private System.Windows.Forms.TextBox txtReqCity;
+        private System.Windows.Forms.Label lblReqStatus;
+        private System.Windows.Forms.ComboBox cmbReqStatus;
+        private System.Windows.Forms.Label lblReqDate;
+        private System.Windows.Forms.DateTimePicker dtpReqDate;
+        private System.Windows.Forms.Button btnSaveRequest;
+        private System.Windows.Forms.Button btnCancelRequest;
         private System.Windows.Forms.Panel pnlOffers;
     }
 }

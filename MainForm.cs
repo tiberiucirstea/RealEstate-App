@@ -8,13 +8,18 @@ namespace RealEstateAgency
     public partial class MainForm : Form
     {
         private readonly PropertyRepository _propertyRepository = new PropertyRepository();
-        private readonly ClientRepository   _clientRepository   = new ClientRepository();
+        private readonly ClientRepository _clientRepository = new ClientRepository();
+        private readonly RequestRepository _requestRepository = new RequestRepository();
 
         private Property _selectedProperty = null;
         private bool _isAddingProperty = false;
 
         private Client _selectedClient = null;
         private bool _isAddingClient = false;
+
+        private Request _selectedRequest = null;
+        private bool _isAddingRequest = false;
+        private Client _requestClient = null;
 
         public MainForm()
         {
@@ -33,10 +38,26 @@ namespace RealEstateAgency
             foreach (var type in Enum.GetValues(typeof(TransactionType)))
                 cmbPropTransaction.Items.Add(type);
 
+            cmbFilterStatus.Items.Add("All");
+            foreach (var status in Enum.GetValues(typeof(RequestStatus)))
+                cmbFilterStatus.Items.Add(status);
+            cmbFilterStatus.SelectedIndex = 0;
+
+            foreach (var type in Enum.GetValues(typeof(PropertyType)))
+                cmbReqPropType.Items.Add(type);
+            foreach (var type in Enum.GetValues(typeof(TransactionType)))
+                cmbReqTransaction.Items.Add(type);
+            foreach (var status in Enum.GetValues(typeof(RequestStatus)))
+                cmbReqStatus.Items.Add(status);
+
+            numReqMaxBudget.Minimum = 0;
+            numReqMaxBudget.Maximum = 9999999;
+
             ShowPanel(pnlProperties);
             SetActiveButton(btnProperties);
             RefreshProperties();
             RefreshClients();
+            RefreshRequests();
         }
 
         // ── NAVIGATION ────────────────────────────────────────────────
@@ -76,6 +97,7 @@ namespace RealEstateAgency
         {
             ShowPanel(pnlRequests);
             SetActiveButton(btnRequests);
+            pnlRequestForm.Visible = false;
         }
 
         private void btnOffers_Click(object sender, EventArgs e)
@@ -346,5 +368,197 @@ namespace RealEstateAgency
             txtClientPhone.Text = client.Phone;
             txtClientEmail.Text = client.Email;
         }
+
+        // ── REQUESTS ────────────────────────────────────────────────
+
+        private void RefreshRequests()
+        {
+            var requests = _requestRepository.GetAll();
+
+            if (cmbFilterStatus.SelectedItem != null && cmbFilterStatus.SelectedItem.ToString() != "All")
+            {
+                var selectedStatus = (RequestStatus)cmbFilterStatus.SelectedItem;
+                requests = requests.FindAll(r => r.Status == selectedStatus);
+            }
+
+            dgvRequests.DataSource = requests;
+
+            if (dgvRequests.Columns.Contains("Id"))
+                dgvRequests.Columns["Id"].Visible = false;
+            if (dgvRequests.Columns.Contains("ClientId"))
+                dgvRequests.Columns["ClientId"].Visible = false;
+            if (dgvRequests.Columns.Contains("Client"))
+                dgvRequests.Columns["Client"].Visible = false;
+
+            btnEditRequest.Enabled = dgvRequests.SelectedRows.Count > 0;
+            btnDeleteRequest.Enabled = dgvRequests.SelectedRows.Count > 0;
+        }
+
+        private void dgvRequests_SelectionChanged(object sender, EventArgs e)
+        {
+            bool hasSelection = dgvRequests.SelectedRows.Count > 0;
+            btnEditRequest.Enabled = hasSelection;
+            btnDeleteRequest.Enabled = hasSelection;
+        }
+
+        private void cmbFilterStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshRequests();
+        }
+
+        private void ShowClientsForRequest(string filter)
+        {
+            lstRequestClients.Items.Clear();
+            var clients = _clientRepository.GetAll();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                filter = filter.Trim().ToLower();
+                clients = clients.FindAll(c =>
+                    c.LastName.ToLower().Contains(filter) ||
+                    c.FirstName.ToLower().Contains(filter) ||
+                    (c.LastName + " " + c.FirstName).ToLower().Contains(filter));
+            }
+
+            foreach (var client in clients)
+            {
+                lstRequestClients.Items.Add(new ClientListItem
+                {
+                    Display = client.LastName + " " + client.FirstName,
+                    Client = client
+                });
+            }
+            lstRequestClients.DisplayMember = "Display";
+        }
+
+        private void txtSearchClient_TextChanged(object sender, EventArgs e)
+        {
+            ShowClientsForRequest(txtSearchClient.Text);
+        }
+
+        private void lstRequestClients_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstRequestClients.SelectedItem == null) return;
+            _requestClient = ((ClientListItem)lstRequestClients.SelectedItem).Client;
+        }
+
+        private void btnAddRequest_Click(object sender, EventArgs e)
+        {
+            _isAddingRequest = true;
+            _selectedRequest = null;
+            _requestClient = null;
+            ClearRequestForm();
+            ShowClientsForRequest("");
+            pnlRequestForm.Visible = true;
+        }
+
+        private void btnEditRequest_Click(object sender, EventArgs e)
+        {
+            _isAddingRequest = false;
+            _selectedRequest = dgvRequests.SelectedRows[0].DataBoundItem as Request;
+            _requestClient = _selectedRequest.Client;
+            PopulateRequestForm(_selectedRequest);
+            pnlRequestForm.Visible = true;
+        }
+
+        private void btnDeleteRequest_Click(object sender, EventArgs e)
+        {
+            var request = dgvRequests.SelectedRows[0].DataBoundItem as Request;
+            if (MessageBox.Show(
+                $"Are you sure you want to delete the request from {request.Client.LastName} {request.Client.FirstName}?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _requestRepository.Delete(request.Id);
+                RefreshRequests();
+            }
+        }
+
+        private void btnSaveRequest_Click(object sender, EventArgs e)
+        {
+            if (_requestClient == null)
+            {
+                MessageBox.Show("Please select a client from the list!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(txtReqCity.Text))
+            {
+                MessageBox.Show("City is required!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (numReqMaxBudget.Value <= 0)
+            {
+                MessageBox.Show("Max budget must be greater than 0!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var request = new Request
+            {
+                ClientId = _requestClient.Id,
+                Client = _requestClient,
+                PropertyType = (PropertyType)cmbReqPropType.SelectedItem,
+                TransactionType = (TransactionType)cmbReqTransaction.SelectedItem,
+                MaxBudget = numReqMaxBudget.Value,
+                City = txtReqCity.Text.Trim(),
+                Status = (RequestStatus)cmbReqStatus.SelectedItem,
+                RequestDate = dtpReqDate.Value
+            };
+
+            if (_isAddingRequest)
+            {
+                request.Id = Guid.NewGuid();
+                _requestRepository.Add(request);
+            }
+            else
+            {
+                request.Id = _selectedRequest.Id;
+                _requestRepository.Update(request);
+            }
+
+            pnlRequestForm.Visible = false;
+            RefreshRequests();
+        }
+
+        private void btnCancelRequest_Click(object sender, EventArgs e)
+        {
+            pnlRequestForm.Visible = false;
+            ClearRequestForm();
+        }
+
+        private void ClearRequestForm()
+        {
+            txtSearchClient.Clear();
+            lstRequestClients.Items.Clear();
+            if (cmbReqPropType.Items.Count > 0)
+                cmbReqPropType.SelectedIndex = 0;
+            if (cmbReqTransaction.Items.Count > 0)
+                cmbReqTransaction.SelectedIndex = 0;
+            numReqMaxBudget.Value = 0;
+            txtReqCity.Clear();
+            if (cmbReqStatus.Items.Count > 0)
+                cmbReqStatus.SelectedIndex = 0;
+            dtpReqDate.Value = DateTime.Now;
+            _requestClient = null;
+        }
+
+        private void PopulateRequestForm(Request request)
+        {
+            txtSearchClient.Text = request.Client.LastName + " " + request.Client.FirstName;
+            _requestClient = request.Client;
+            cmbReqPropType.SelectedItem = request.PropertyType;
+            cmbReqTransaction.SelectedItem = request.TransactionType;
+            numReqMaxBudget.Value = request.MaxBudget;
+            txtReqCity.Text = request.City;
+            cmbReqStatus.SelectedItem = request.Status;
+            dtpReqDate.Value = request.RequestDate;
+        }
+    }
+
+    public class ClientListItem
+    {
+        public string Display { get; set; }
+        public Client Client { get; set; }
+        public override string ToString() => Display;
     }
 }
