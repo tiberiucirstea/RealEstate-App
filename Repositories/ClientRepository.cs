@@ -35,34 +35,6 @@ namespace RealEstateAgency.Repositories
             return results;
         }
 
-        public List<Client> Search(string query)
-        {
-            var results = new List<Client>();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                using (var command = new SqlCommand(
-                    "SELECT Id, LastName, FirstName, Phone, Email FROM Clients " +
-                    "WHERE LastName LIKE @query OR FirstName LIKE @query OR Phone LIKE @query", connection))
-                {
-                    command.Parameters.AddWithValue("@query", "%" + query + "%");
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        results.Add(new Client
-                        {
-                            Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            Phone = reader.GetString(reader.GetOrdinal("Phone")),
-                            Email = reader.GetString(reader.GetOrdinal("Email"))
-                        });
-                    }
-                }
-            }
-            return results;
-        }
-
         public bool ExistsByEmailOrPhone(string email, string phone, Guid? excludeId = null)
         {
             using (var connection = new SqlConnection(_connectionString))

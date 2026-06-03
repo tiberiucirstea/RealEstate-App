@@ -55,9 +55,6 @@ namespace RealEstateAgency
             foreach (var status in Enum.GetValues(typeof(RequestStatus)))
                 cmbReqStatus.Items.Add(status);
 
-            numReqMaxBudget.Minimum = 0;
-            numReqMaxBudget.Maximum = 9999999;
-
             cmbFilterOfferStatus.Items.Add("All");
             foreach (var status in Enum.GetValues(typeof(OfferStatus)))
                 cmbFilterOfferStatus.Items.Add(status);
@@ -174,13 +171,19 @@ namespace RealEstateAgency
         {
             var property = dgvProperties.SelectedRows[0].DataBoundItem as Property;
             if (MessageBox.Show(
-                $"Are you sure you want to delete the property at {property.Address}, {property.City}?",
+                $"Are you sure you want to delete the property at {property.Address}, {property.City}?\nAll associated offers will also be deleted!",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                var offers = _offerRepository.GetAll()
+                    .FindAll(o => o.PropertyId == property.Id);
+                foreach (var offer in offers)
+                    _offerRepository.Delete(offer.Id);
+
                 _propertyRepository.Delete(property.Id);
                 RefreshProperties();
+                RefreshOffers();
             }
         }
 
@@ -303,13 +306,25 @@ namespace RealEstateAgency
         {
             var client = dgvClients.SelectedRows[0].DataBoundItem as Client;
             if (MessageBox.Show(
-                $"Are you sure you want to delete client {client.LastName} {client.FirstName}?",
+                $"Are you sure you want to delete client {client.LastName} {client.FirstName}?\nAll associated requests and offers will also be deleted!",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                var offers = _offerRepository.GetAll()
+                    .FindAll(o => o.ClientId == client.Id);
+                foreach (var offer in offers)
+                    _offerRepository.Delete(offer.Id);
+
+                var requests = _requestRepository.GetAll()
+                    .FindAll(r => r.ClientId == client.Id);
+                foreach (var request in requests)
+                    _requestRepository.Delete(request.Id);
+
                 _clientRepository.Delete(client.Id);
                 RefreshClients();
+                RefreshOffers();
+                RefreshRequests();
             }
         }
 
