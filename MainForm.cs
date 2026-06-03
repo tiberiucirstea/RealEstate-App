@@ -241,12 +241,14 @@ namespace RealEstateAgency
 
         private void ClearPropertyForm()
         {
-            if (cmbPropType.Items.Count > 0) cmbPropType.SelectedIndex = 0;
+            if (cmbPropType.Items.Count > 0)
+                cmbPropType.SelectedIndex = 0;
             txtPropAddress.Clear();
             txtPropCity.Clear();
             numPropArea.Value = 0;
             numPropPrice.Value = 0;
-            if (cmbPropTransaction.Items.Count > 0) cmbPropTransaction.SelectedIndex = 0;
+            if (cmbPropTransaction.Items.Count > 0)
+                cmbPropTransaction.SelectedIndex = 0;
         }
 
         private void PopulatePropertyForm(Property property)
