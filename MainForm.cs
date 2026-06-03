@@ -65,21 +65,12 @@ namespace RealEstateAgency
                 foreach (var status in Enum.GetValues(typeof(OfferStatus)))
                     cmbOfferStatus.Items.Add(status);
 
-                ShowPanel(pnlProperties);
-                SetActiveButton(btnProperties);
-                RefreshProperties();
-                RefreshClients();
-                RefreshRequests();
-                RefreshOffers();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Could not load data from the database.\n\n" + ex.Message,
-                    "Database Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            ShowPanel(pnlProperties);
+            SetActiveButton(btnProperties);
+            RefreshProperties();
+            RefreshClients();
+            RefreshRequests();
+            RefreshOffers();
         }
 
         // ── NAVIGATION ────────────────────────────────────────────────
