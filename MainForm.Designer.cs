@@ -97,6 +97,23 @@ namespace RealEstateAgency
             this.btnSaveRequest = new System.Windows.Forms.Button();
             this.btnCancelRequest = new System.Windows.Forms.Button();
             this.pnlOffers = new System.Windows.Forms.Panel();
+            this.btnAddOffer = new System.Windows.Forms.Button();
+            this.btnEditOffer = new System.Windows.Forms.Button();
+            this.btnDeleteOffer = new System.Windows.Forms.Button();
+            this.cmbFilterOfferStatus = new System.Windows.Forms.ComboBox();
+            this.dgvOffers = new System.Windows.Forms.DataGridView();
+            this.pnlOfferForm = new System.Windows.Forms.Panel();
+            this.lblSearchClientOffer = new System.Windows.Forms.Label();
+            this.txtSearchClientOffer = new System.Windows.Forms.TextBox();
+            this.lstOfferClients = new System.Windows.Forms.ListBox();
+            this.lblOfferProperty = new System.Windows.Forms.Label();
+            this.cmbOfferProperty = new System.Windows.Forms.ComboBox();
+            this.lblOfferDate = new System.Windows.Forms.Label();
+            this.dtpOfferDate = new System.Windows.Forms.DateTimePicker();
+            this.lblOfferStatus = new System.Windows.Forms.Label();
+            this.cmbOfferStatus = new System.Windows.Forms.ComboBox();
+            this.btnSaveOffer = new System.Windows.Forms.Button();
+            this.btnCancelOffer = new System.Windows.Forms.Button();
             this.pnlSidebar.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlProperties.SuspendLayout();
@@ -105,12 +122,15 @@ namespace RealEstateAgency
             this.pnlClientForm.SuspendLayout();
             this.pnlRequests.SuspendLayout();
             this.pnlRequestForm.SuspendLayout();
+            this.pnlOffers.SuspendLayout();
+            this.pnlOfferForm.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropArea)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropPrice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClients)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReqMaxBudget)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRequests)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOffers)).BeginInit();
             this.SuspendLayout();
             //
             // pnlSidebar
@@ -988,12 +1008,238 @@ namespace RealEstateAgency
             // pnlOffers
             //
             this.pnlOffers.BackColor = System.Drawing.Color.White;
+            this.pnlOffers.Controls.Add(this.pnlOfferForm);
+            this.pnlOffers.Controls.Add(this.dgvOffers);
+            this.pnlOffers.Controls.Add(this.cmbFilterOfferStatus);
+            this.pnlOffers.Controls.Add(this.btnDeleteOffer);
+            this.pnlOffers.Controls.Add(this.btnEditOffer);
+            this.pnlOffers.Controls.Add(this.btnAddOffer);
             this.pnlOffers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlOffers.Location = new System.Drawing.Point(0, 0);
             this.pnlOffers.Name = "pnlOffers";
             this.pnlOffers.Size = new System.Drawing.Size(1000, 700);
             this.pnlOffers.TabIndex = 3;
             this.pnlOffers.Visible = false;
+            //
+            // btnAddOffer
+            //
+            this.btnAddOffer.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnAddOffer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAddOffer.FlatAppearance.BorderSize = 0;
+            this.btnAddOffer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnAddOffer.ForeColor = System.Drawing.Color.White;
+            this.btnAddOffer.Location = new System.Drawing.Point(15, 15);
+            this.btnAddOffer.Name = "btnAddOffer";
+            this.btnAddOffer.Size = new System.Drawing.Size(110, 38);
+            this.btnAddOffer.TabIndex = 0;
+            this.btnAddOffer.Text = "Add";
+            this.btnAddOffer.UseVisualStyleBackColor = false;
+            this.btnAddOffer.Click += new System.EventHandler(this.btnAddOffer_Click);
+            //
+            // btnEditOffer
+            //
+            this.btnEditOffer.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnEditOffer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEditOffer.Enabled = false;
+            this.btnEditOffer.FlatAppearance.BorderSize = 0;
+            this.btnEditOffer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEditOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnEditOffer.ForeColor = System.Drawing.Color.White;
+            this.btnEditOffer.Location = new System.Drawing.Point(135, 15);
+            this.btnEditOffer.Name = "btnEditOffer";
+            this.btnEditOffer.Size = new System.Drawing.Size(110, 38);
+            this.btnEditOffer.TabIndex = 1;
+            this.btnEditOffer.Text = "Edit";
+            this.btnEditOffer.UseVisualStyleBackColor = false;
+            this.btnEditOffer.Click += new System.EventHandler(this.btnEditOffer_Click);
+            //
+            // btnDeleteOffer
+            //
+            this.btnDeleteOffer.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnDeleteOffer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDeleteOffer.Enabled = false;
+            this.btnDeleteOffer.FlatAppearance.BorderSize = 0;
+            this.btnDeleteOffer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeleteOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnDeleteOffer.ForeColor = System.Drawing.Color.White;
+            this.btnDeleteOffer.Location = new System.Drawing.Point(255, 15);
+            this.btnDeleteOffer.Name = "btnDeleteOffer";
+            this.btnDeleteOffer.Size = new System.Drawing.Size(110, 38);
+            this.btnDeleteOffer.TabIndex = 2;
+            this.btnDeleteOffer.Text = "Delete";
+            this.btnDeleteOffer.UseVisualStyleBackColor = false;
+            this.btnDeleteOffer.Click += new System.EventHandler(this.btnDeleteOffer_Click);
+            //
+            // cmbFilterOfferStatus
+            //
+            this.cmbFilterOfferStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.cmbFilterOfferStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFilterOfferStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbFilterOfferStatus.Location = new System.Drawing.Point(780, 22);
+            this.cmbFilterOfferStatus.Name = "cmbFilterOfferStatus";
+            this.cmbFilterOfferStatus.Size = new System.Drawing.Size(200, 23);
+            this.cmbFilterOfferStatus.TabIndex = 3;
+            this.cmbFilterOfferStatus.SelectedIndexChanged += new System.EventHandler(this.cmbFilterOfferStatus_SelectedIndexChanged);
+            //
+            // dgvOffers
+            //
+            this.dgvOffers.AllowUserToAddRows = false;
+            this.dgvOffers.AllowUserToDeleteRows = false;
+            this.dgvOffers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvOffers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvOffers.BackgroundColor = System.Drawing.Color.White;
+            this.dgvOffers.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvOffers.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.dgvOffers.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dgvOffers.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvOffers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOffers.Location = new System.Drawing.Point(10, 65);
+            this.dgvOffers.MultiSelect = false;
+            this.dgvOffers.Name = "dgvOffers";
+            this.dgvOffers.ReadOnly = true;
+            this.dgvOffers.RowHeadersVisible = false;
+            this.dgvOffers.RowTemplate.Height = 28;
+            this.dgvOffers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvOffers.Size = new System.Drawing.Size(975, 415);
+            this.dgvOffers.TabIndex = 4;
+            this.dgvOffers.SelectionChanged += new System.EventHandler(this.dgvOffers_SelectionChanged);
+            //
+            // pnlOfferForm
+            //
+            this.pnlOfferForm.BackColor = System.Drawing.Color.FromArgb(240, 244, 248);
+            this.pnlOfferForm.Controls.Add(this.lblSearchClientOffer);
+            this.pnlOfferForm.Controls.Add(this.txtSearchClientOffer);
+            this.pnlOfferForm.Controls.Add(this.lstOfferClients);
+            this.pnlOfferForm.Controls.Add(this.lblOfferProperty);
+            this.pnlOfferForm.Controls.Add(this.cmbOfferProperty);
+            this.pnlOfferForm.Controls.Add(this.lblOfferDate);
+            this.pnlOfferForm.Controls.Add(this.dtpOfferDate);
+            this.pnlOfferForm.Controls.Add(this.lblOfferStatus);
+            this.pnlOfferForm.Controls.Add(this.cmbOfferStatus);
+            this.pnlOfferForm.Controls.Add(this.btnSaveOffer);
+            this.pnlOfferForm.Controls.Add(this.btnCancelOffer);
+            this.pnlOfferForm.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlOfferForm.Location = new System.Drawing.Point(0, 450);
+            this.pnlOfferForm.Name = "pnlOfferForm";
+            this.pnlOfferForm.Size = new System.Drawing.Size(1000, 250);
+            this.pnlOfferForm.TabIndex = 5;
+            this.pnlOfferForm.Visible = false;
+            //
+            // lblSearchClientOffer
+            //
+            this.lblSearchClientOffer.AutoSize = true;
+            this.lblSearchClientOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblSearchClientOffer.Location = new System.Drawing.Point(15, 15);
+            this.lblSearchClientOffer.Name = "lblSearchClientOffer";
+            this.lblSearchClientOffer.TabIndex = 0;
+            this.lblSearchClientOffer.Text = "Search client:";
+            //
+            // txtSearchClientOffer
+            //
+            this.txtSearchClientOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtSearchClientOffer.Location = new System.Drawing.Point(15, 35);
+            this.txtSearchClientOffer.Name = "txtSearchClientOffer";
+            this.txtSearchClientOffer.Size = new System.Drawing.Size(180, 23);
+            this.txtSearchClientOffer.TabIndex = 1;
+            this.txtSearchClientOffer.TextChanged += new System.EventHandler(this.txtSearchClientOffer_TextChanged);
+            //
+            // lstOfferClients
+            //
+            this.lstOfferClients.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lstOfferClients.FormattingEnabled = true;
+            this.lstOfferClients.ItemHeight = 15;
+            this.lstOfferClients.Location = new System.Drawing.Point(15, 70);
+            this.lstOfferClients.Name = "lstOfferClients";
+            this.lstOfferClients.Size = new System.Drawing.Size(180, 154);
+            this.lstOfferClients.TabIndex = 2;
+            this.lstOfferClients.SelectedIndexChanged += new System.EventHandler(this.lstOfferClients_SelectedIndexChanged);
+            //
+            // lblOfferProperty
+            //
+            this.lblOfferProperty.AutoSize = true;
+            this.lblOfferProperty.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblOfferProperty.Location = new System.Drawing.Point(215, 15);
+            this.lblOfferProperty.Name = "lblOfferProperty";
+            this.lblOfferProperty.TabIndex = 3;
+            this.lblOfferProperty.Text = "Property:";
+            //
+            // cmbOfferProperty
+            //
+            this.cmbOfferProperty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOfferProperty.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbOfferProperty.Location = new System.Drawing.Point(215, 35);
+            this.cmbOfferProperty.Name = "cmbOfferProperty";
+            this.cmbOfferProperty.Size = new System.Drawing.Size(380, 23);
+            this.cmbOfferProperty.TabIndex = 4;
+            //
+            // lblOfferDate
+            //
+            this.lblOfferDate.AutoSize = true;
+            this.lblOfferDate.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblOfferDate.Location = new System.Drawing.Point(215, 80);
+            this.lblOfferDate.Name = "lblOfferDate";
+            this.lblOfferDate.TabIndex = 5;
+            this.lblOfferDate.Text = "Offer date:";
+            //
+            // dtpOfferDate
+            //
+            this.dtpOfferDate.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dtpOfferDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpOfferDate.Location = new System.Drawing.Point(215, 100);
+            this.dtpOfferDate.Name = "dtpOfferDate";
+            this.dtpOfferDate.Size = new System.Drawing.Size(160, 23);
+            this.dtpOfferDate.TabIndex = 6;
+            //
+            // lblOfferStatus
+            //
+            this.lblOfferStatus.AutoSize = true;
+            this.lblOfferStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblOfferStatus.Location = new System.Drawing.Point(390, 80);
+            this.lblOfferStatus.Name = "lblOfferStatus";
+            this.lblOfferStatus.TabIndex = 7;
+            this.lblOfferStatus.Text = "Status:";
+            //
+            // cmbOfferStatus
+            //
+            this.cmbOfferStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOfferStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbOfferStatus.Location = new System.Drawing.Point(390, 100);
+            this.cmbOfferStatus.Name = "cmbOfferStatus";
+            this.cmbOfferStatus.Size = new System.Drawing.Size(160, 23);
+            this.cmbOfferStatus.TabIndex = 8;
+            //
+            // btnSaveOffer
+            //
+            this.btnSaveOffer.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnSaveOffer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSaveOffer.FlatAppearance.BorderSize = 0;
+            this.btnSaveOffer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSaveOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSaveOffer.ForeColor = System.Drawing.Color.White;
+            this.btnSaveOffer.Location = new System.Drawing.Point(840, 195);
+            this.btnSaveOffer.Name = "btnSaveOffer";
+            this.btnSaveOffer.Size = new System.Drawing.Size(110, 35);
+            this.btnSaveOffer.TabIndex = 10;
+            this.btnSaveOffer.Text = "Save";
+            this.btnSaveOffer.UseVisualStyleBackColor = false;
+            this.btnSaveOffer.Click += new System.EventHandler(this.btnSaveOffer_Click);
+            //
+            // btnCancelOffer
+            //
+            this.btnCancelOffer.BackColor = System.Drawing.Color.FromArgb(120, 144, 156);
+            this.btnCancelOffer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCancelOffer.FlatAppearance.BorderSize = 0;
+            this.btnCancelOffer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelOffer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnCancelOffer.ForeColor = System.Drawing.Color.White;
+            this.btnCancelOffer.Location = new System.Drawing.Point(720, 195);
+            this.btnCancelOffer.Name = "btnCancelOffer";
+            this.btnCancelOffer.Size = new System.Drawing.Size(110, 35);
+            this.btnCancelOffer.TabIndex = 9;
+            this.btnCancelOffer.Text = "Cancel";
+            this.btnCancelOffer.UseVisualStyleBackColor = false;
+            this.btnCancelOffer.Click += new System.EventHandler(this.btnCancelOffer_Click);
             //
             // MainForm
             //
@@ -1013,15 +1259,19 @@ namespace RealEstateAgency
             ((System.ComponentModel.ISupportInitialize)(this.dgvClients)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReqMaxBudget)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRequests)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOffers)).EndInit();
             this.pnlPropertyForm.ResumeLayout(false);
             this.pnlPropertyForm.PerformLayout();
             this.pnlClientForm.ResumeLayout(false);
             this.pnlClientForm.PerformLayout();
             this.pnlRequestForm.ResumeLayout(false);
             this.pnlRequestForm.PerformLayout();
+            this.pnlOfferForm.ResumeLayout(false);
+            this.pnlOfferForm.PerformLayout();
             this.pnlProperties.ResumeLayout(false);
             this.pnlClients.ResumeLayout(false);
             this.pnlRequests.ResumeLayout(false);
+            this.pnlOffers.ResumeLayout(false);
             this.pnlSidebar.ResumeLayout(false);
             this.pnlContent.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1073,6 +1323,24 @@ namespace RealEstateAgency
         private System.Windows.Forms.TextBox txtClientEmail;
         private System.Windows.Forms.Button btnSaveClient;
         private System.Windows.Forms.Button btnCancelClient;
+        private System.Windows.Forms.Panel pnlOffers;
+        private System.Windows.Forms.Button btnAddOffer;
+        private System.Windows.Forms.Button btnEditOffer;
+        private System.Windows.Forms.Button btnDeleteOffer;
+        private System.Windows.Forms.ComboBox cmbFilterOfferStatus;
+        private System.Windows.Forms.DataGridView dgvOffers;
+        private System.Windows.Forms.Panel pnlOfferForm;
+        private System.Windows.Forms.Label lblSearchClientOffer;
+        private System.Windows.Forms.TextBox txtSearchClientOffer;
+        private System.Windows.Forms.ListBox lstOfferClients;
+        private System.Windows.Forms.Label lblOfferProperty;
+        private System.Windows.Forms.ComboBox cmbOfferProperty;
+        private System.Windows.Forms.Label lblOfferDate;
+        private System.Windows.Forms.DateTimePicker dtpOfferDate;
+        private System.Windows.Forms.Label lblOfferStatus;
+        private System.Windows.Forms.ComboBox cmbOfferStatus;
+        private System.Windows.Forms.Button btnSaveOffer;
+        private System.Windows.Forms.Button btnCancelOffer;
         private System.Windows.Forms.Panel pnlRequests;
         private System.Windows.Forms.Button btnAddRequest;
         private System.Windows.Forms.Button btnEditRequest;
@@ -1097,6 +1365,5 @@ namespace RealEstateAgency
         private System.Windows.Forms.DateTimePicker dtpReqDate;
         private System.Windows.Forms.Button btnSaveRequest;
         private System.Windows.Forms.Button btnCancelRequest;
-        private System.Windows.Forms.Panel pnlOffers;
     }
 }

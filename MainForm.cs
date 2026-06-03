@@ -10,6 +10,7 @@ namespace RealEstateAgency
         private readonly PropertyRepository _propertyRepository = new PropertyRepository();
         private readonly ClientRepository _clientRepository = new ClientRepository();
         private readonly RequestRepository _requestRepository = new RequestRepository();
+        private readonly OfferRepository _offerRepository = new OfferRepository();
 
         private Property _selectedProperty = null;
         private bool _isAddingProperty = false;
@@ -20,6 +21,10 @@ namespace RealEstateAgency
         private Request _selectedRequest = null;
         private bool _isAddingRequest = false;
         private Client _requestClient = null;
+
+        private Offer _selectedOffer = null;
+        private bool _isAddingOffer = false;
+        private Client _offerClient = null;
 
         public MainForm()
         {
@@ -53,11 +58,20 @@ namespace RealEstateAgency
             numReqMaxBudget.Minimum = 0;
             numReqMaxBudget.Maximum = 9999999;
 
+            cmbFilterOfferStatus.Items.Add("All");
+            foreach (var status in Enum.GetValues(typeof(OfferStatus)))
+                cmbFilterOfferStatus.Items.Add(status);
+            cmbFilterOfferStatus.SelectedIndex = 0;
+
+            foreach (var status in Enum.GetValues(typeof(OfferStatus)))
+                cmbOfferStatus.Items.Add(status);
+
             ShowPanel(pnlProperties);
             SetActiveButton(btnProperties);
             RefreshProperties();
             RefreshClients();
             RefreshRequests();
+            RefreshOffers();
         }
 
         // ── NAVIGATION ────────────────────────────────────────────────
@@ -104,6 +118,7 @@ namespace RealEstateAgency
         {
             ShowPanel(pnlOffers);
             SetActiveButton(btnOffers);
+            pnlOfferForm.Visible = false;
         }
 
         // ── PROPERTIES ────────────────────────────────────────────────
@@ -553,12 +568,253 @@ namespace RealEstateAgency
             cmbReqStatus.SelectedItem = request.Status;
             dtpReqDate.Value = request.RequestDate;
         }
+
+        // ── OFFERS ────────────────────────────────────────────────
+
+        private void RefreshOffers()
+        {
+            var offers = _offerRepository.GetAll();
+
+            if (cmbFilterOfferStatus.SelectedItem != null && cmbFilterOfferStatus.SelectedItem.ToString() != "All")
+            {
+                var selectedStatus = (OfferStatus)cmbFilterOfferStatus.SelectedItem;
+                offers = offers.FindAll(o => o.Status == selectedStatus);
+            }
+
+            dgvOffers.DataSource = offers;
+
+            if (dgvOffers.Columns.Contains("Id"))
+                dgvOffers.Columns["Id"].Visible = false;
+            if (dgvOffers.Columns.Contains("ClientId"))
+                dgvOffers.Columns["ClientId"].Visible = false;
+            if (dgvOffers.Columns.Contains("PropertyId"))
+                dgvOffers.Columns["PropertyId"].Visible = false;
+            if (dgvOffers.Columns.Contains("Client"))
+                dgvOffers.Columns["Client"].Visible = false;
+            if (dgvOffers.Columns.Contains("Property"))
+                dgvOffers.Columns["Property"].Visible = false;
+
+            btnEditOffer.Enabled = dgvOffers.SelectedRows.Count > 0;
+            btnDeleteOffer.Enabled = dgvOffers.SelectedRows.Count > 0;
+        }
+
+        private void dgvOffers_SelectionChanged(object sender, EventArgs e)
+        {
+            bool hasSelection = dgvOffers.SelectedRows.Count > 0;
+            btnEditOffer.Enabled = hasSelection;
+            btnDeleteOffer.Enabled = hasSelection;
+        }
+
+        private void cmbFilterOfferStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshOffers();
+        }
+
+        private void ShowClientsForOffer(string filter)
+        {
+            lstOfferClients.Items.Clear();
+            var clients = _clientRepository.GetAll();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                filter = filter.Trim().ToLower();
+                clients = clients.FindAll(c =>
+                    c.LastName.ToLower().Contains(filter) ||
+                    c.FirstName.ToLower().Contains(filter) ||
+                    (c.LastName + " " + c.FirstName).ToLower().Contains(filter));
+            }
+
+            foreach (var client in clients)
+            {
+                lstOfferClients.Items.Add(new ClientListItem
+                {
+                    Display = client.LastName + " " + client.FirstName,
+                    Client = client
+                });
+            }
+            lstOfferClients.DisplayMember = "Display";
+        }
+
+        private void txtSearchClientOffer_TextChanged(object sender, EventArgs e)
+        {
+            ShowClientsForOffer(txtSearchClientOffer.Text);
+        }
+
+        private void lstOfferClients_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstOfferClients.SelectedItem == null) return;
+            _offerClient = ((ClientListItem)lstOfferClients.SelectedItem).Client;
+        }
+
+        private void btnAddOffer_Click(object sender, EventArgs e)
+        {
+            _isAddingOffer = true;
+            _selectedOffer = null;
+            _offerClient = null;
+            ClearOfferForm();
+            ShowClientsForOffer("");
+            cmbOfferProperty.Items.Clear();
+            foreach (var property in _propertyRepository.GetAll())
+            {
+                cmbOfferProperty.Items.Add(new PropertyListItem
+                {
+                    Display = property.Address + ", " + property.City,
+                    Property = property
+                });
+            }
+            cmbOfferProperty.DisplayMember = "Display";
+            if (cmbOfferProperty.Items.Count > 0)
+                cmbOfferProperty.SelectedIndex = 0;
+            pnlOfferForm.Visible = true;
+        }
+
+        private void btnEditOffer_Click(object sender, EventArgs e)
+        {
+            _isAddingOffer = false;
+            _selectedOffer = dgvOffers.SelectedRows[0].DataBoundItem as Offer;
+            _offerClient = _selectedOffer.Client;
+
+            cmbOfferProperty.Items.Clear();
+            foreach (var property in _propertyRepository.GetAll())
+            {
+                cmbOfferProperty.Items.Add(new PropertyListItem
+                {
+                    Display = property.Address + ", " + property.City,
+                    Property = property
+                });
+            }
+            cmbOfferProperty.DisplayMember = "Display";
+
+            PopulateOfferForm(_selectedOffer);
+            pnlOfferForm.Visible = true;
+        }
+
+        private void btnDeleteOffer_Click(object sender, EventArgs e)
+        {
+            var offer = dgvOffers.SelectedRows[0].DataBoundItem as Offer;
+            if (MessageBox.Show(
+                $"Are you sure you want to delete the offer for client {offer.Client.LastName} {offer.Client.FirstName}?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _offerRepository.Delete(offer.Id);
+                RefreshOffers();
+            }
+        }
+
+        private void btnSaveOffer_Click(object sender, EventArgs e)
+        {
+            if (_offerClient == null)
+            {
+                MessageBox.Show("Please select a client from the list!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (cmbOfferProperty.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a property!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var selectedProperty = ((PropertyListItem)cmbOfferProperty.SelectedItem).Property;
+            var newStatus = (OfferStatus)cmbOfferStatus.SelectedItem;
+
+            var offer = new Offer
+            {
+                ClientId = _offerClient.Id,
+                Client = _offerClient,
+                PropertyId = selectedProperty.Id,
+                Property = selectedProperty,
+                OfferDate = dtpOfferDate.Value,
+                Status = newStatus
+            };
+
+            if (_isAddingOffer)
+            {
+                offer.Id = Guid.NewGuid();
+                _offerRepository.Add(offer);
+            }
+            else
+            {
+                offer.Id = _selectedOffer.Id;
+                _offerRepository.Update(offer);
+            }
+
+            if (newStatus == OfferStatus.Accepted)
+            {
+                var propertyStatus = selectedProperty.TransactionType == TransactionType.Sale
+                    ? PropertyStatus.Sold
+                    : PropertyStatus.Rented;
+                _propertyRepository.UpdateStatus(selectedProperty.Id, propertyStatus);
+
+                var activeRequests = _requestRepository.GetAll()
+                    .FindAll(r => r.ClientId == _offerClient.Id && r.Status == RequestStatus.Active);
+                foreach (var request in activeRequests)
+                {
+                    request.Status = RequestStatus.Resolved;
+                    _requestRepository.Update(request);
+                }
+
+                MessageBox.Show(
+                    $"Offer accepted!\nProperty has been marked as {propertyStatus}.\nClient's active requests have been resolved.",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+
+            pnlOfferForm.Visible = false;
+            RefreshOffers();
+            RefreshProperties();
+            RefreshRequests();
+        }
+
+        private void btnCancelOffer_Click(object sender, EventArgs e)
+        {
+            pnlOfferForm.Visible = false;
+            ClearOfferForm();
+        }
+
+        private void ClearOfferForm()
+        {
+            txtSearchClientOffer.Clear();
+            lstOfferClients.Items.Clear();
+            dtpOfferDate.Value = DateTime.Now;
+            if (cmbOfferStatus.Items.Count > 0)
+                cmbOfferStatus.SelectedIndex = 0;
+            _offerClient = null;
+        }
+
+        private void PopulateOfferForm(Offer offer)
+        {
+            txtSearchClientOffer.Text = offer.Client.LastName + " " + offer.Client.FirstName;
+            _offerClient = offer.Client;
+
+            for (int i = 0; i < cmbOfferProperty.Items.Count; i++)
+            {
+                var item = (PropertyListItem)cmbOfferProperty.Items[i];
+                if (item.Property.Id == offer.PropertyId)
+                {
+                    cmbOfferProperty.SelectedIndex = i;
+                    break;
+                }
+            }
+
+            dtpOfferDate.Value = offer.OfferDate;
+            cmbOfferStatus.SelectedItem = offer.Status;
+        }
     }
 
     public class ClientListItem
     {
         public string Display { get; set; }
         public Client Client { get; set; }
+        public override string ToString() => Display;
+    }
+
+    public class PropertyListItem
+    {
+        public string Display { get; set; }
+        public Property Property { get; set; }
         public override string ToString() => Display;
     }
 }
