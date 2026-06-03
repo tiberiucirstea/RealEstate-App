@@ -1,13 +1,14 @@
 using RealEstateAgency.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 
 namespace RealEstateAgency.Repositories
 {
     public class RequestRepository
     {
-        private string _connectionString = "Data Source=.\\SQLEXPRESS;Initial Catalog=RealEstateAgencyDB;Integrated Security=True";
+        private string _connectionString = ConfigurationManager.ConnectionStrings["RealEstateAgencyDB"].ConnectionString;
 
         public List<Request> GetAll()
         {
