@@ -1,5 +1,4 @@
 ﻿using RealEstateAgency;
-using RealEstateAgency.Models;
 using System;
 
 namespace RealEstateAgency.Models

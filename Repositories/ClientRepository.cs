@@ -62,6 +62,26 @@ namespace RealEstateAgency.Repositories
             return results;
         }
 
+        public bool ExistsByEmailOrPhone(string email, string phone, Guid? excludeId = null)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var query = "SELECT COUNT(*) FROM Clients WHERE (Email = @email OR Phone = @phone)";
+                if (excludeId.HasValue)
+                    query += " AND Id != @excludeId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@phone", phone);
+                    if (excludeId.HasValue)
+                        command.Parameters.AddWithValue("@excludeId", excludeId.Value);
+                    return (int)command.ExecuteScalar() > 0;
+                }
+            }
+        }
+
         public void Add(Client client)
         {
             using (var connection = new SqlConnection(_connectionString))

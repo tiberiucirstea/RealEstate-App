@@ -341,6 +341,13 @@ namespace RealEstateAgency
                 return;
             }
 
+            var excludeId = _isAddingClient ? (Guid?)null : _selectedClient.Id;
+            if (_clientRepository.ExistsByEmailOrPhone(txtClientEmail.Text.Trim(), txtClientPhone.Text.Trim(), excludeId))
+            {
+                MessageBox.Show("A client with this email or phone number already exists!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var client = new Client
             {
                 LastName = txtClientLastName.Text.Trim(),
