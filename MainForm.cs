@@ -218,7 +218,7 @@ namespace RealEstateAgency
                 Area = (double)numPropArea.Value,
                 Price = numPropPrice.Value,
                 TransactionType = (TransactionType)cmbPropTransaction.SelectedItem,
-                Status = PropertyStatus.Available
+                Status = _isAddingProperty ? PropertyStatus.Available : _selectedProperty.Status
             };
 
             if (_isAddingProperty)
