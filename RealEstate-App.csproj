@@ -55,11 +55,15 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
-    <Compile Include="Models\Offers.cs" />
+    <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Property.cs" />
     <Compile Include="Models\Request.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ClientRepository.cs" />
+    <Compile Include="Repositories\OfferRepository.cs" />
+    <Compile Include="Repositories\PropertyRepository.cs" />
+    <Compile Include="Repositories\RequestRepository.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -82,5 +86,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
