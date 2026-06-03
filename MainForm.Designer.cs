@@ -57,15 +57,33 @@ namespace RealEstateAgency
             this.btnSaveProperty = new System.Windows.Forms.Button();
             this.btnCancelProperty = new System.Windows.Forms.Button();
             this.pnlClients = new System.Windows.Forms.Panel();
+            this.btnAddClient = new System.Windows.Forms.Button();
+            this.btnEditClient = new System.Windows.Forms.Button();
+            this.btnDeleteClient = new System.Windows.Forms.Button();
+            this.dgvClients = new System.Windows.Forms.DataGridView();
+            this.pnlClientForm = new System.Windows.Forms.Panel();
+            this.lblClientLastName = new System.Windows.Forms.Label();
+            this.txtClientLastName = new System.Windows.Forms.TextBox();
+            this.lblClientFirstName = new System.Windows.Forms.Label();
+            this.txtClientFirstName = new System.Windows.Forms.TextBox();
+            this.lblClientPhone = new System.Windows.Forms.Label();
+            this.txtClientPhone = new System.Windows.Forms.TextBox();
+            this.lblClientEmail = new System.Windows.Forms.Label();
+            this.txtClientEmail = new System.Windows.Forms.TextBox();
+            this.btnSaveClient = new System.Windows.Forms.Button();
+            this.btnCancelClient = new System.Windows.Forms.Button();
             this.pnlRequests = new System.Windows.Forms.Panel();
             this.pnlOffers = new System.Windows.Forms.Panel();
             this.pnlSidebar.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlProperties.SuspendLayout();
             this.pnlPropertyForm.SuspendLayout();
+            this.pnlClients.SuspendLayout();
+            this.pnlClientForm.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropArea)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropPrice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClients)).BeginInit();
             this.SuspendLayout();
             //
             // pnlSidebar
@@ -440,12 +458,210 @@ namespace RealEstateAgency
             // pnlClients
             //
             this.pnlClients.BackColor = System.Drawing.Color.White;
+            this.pnlClients.Controls.Add(this.dgvClients);
+            this.pnlClients.Controls.Add(this.pnlClientForm);
+            this.pnlClients.Controls.Add(this.btnDeleteClient);
+            this.pnlClients.Controls.Add(this.btnEditClient);
+            this.pnlClients.Controls.Add(this.btnAddClient);
             this.pnlClients.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlClients.Location = new System.Drawing.Point(0, 0);
             this.pnlClients.Name = "pnlClients";
             this.pnlClients.Size = new System.Drawing.Size(1000, 700);
             this.pnlClients.TabIndex = 1;
             this.pnlClients.Visible = false;
+            //
+            // btnAddClient
+            //
+            this.btnAddClient.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnAddClient.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAddClient.FlatAppearance.BorderSize = 0;
+            this.btnAddClient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnAddClient.ForeColor = System.Drawing.Color.White;
+            this.btnAddClient.Location = new System.Drawing.Point(15, 15);
+            this.btnAddClient.Name = "btnAddClient";
+            this.btnAddClient.Size = new System.Drawing.Size(110, 38);
+            this.btnAddClient.TabIndex = 0;
+            this.btnAddClient.Text = "Add";
+            this.btnAddClient.UseVisualStyleBackColor = false;
+            this.btnAddClient.Click += new System.EventHandler(this.btnAddClient_Click);
+            //
+            // btnEditClient
+            //
+            this.btnEditClient.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnEditClient.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEditClient.Enabled = false;
+            this.btnEditClient.FlatAppearance.BorderSize = 0;
+            this.btnEditClient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEditClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnEditClient.ForeColor = System.Drawing.Color.White;
+            this.btnEditClient.Location = new System.Drawing.Point(135, 15);
+            this.btnEditClient.Name = "btnEditClient";
+            this.btnEditClient.Size = new System.Drawing.Size(110, 38);
+            this.btnEditClient.TabIndex = 1;
+            this.btnEditClient.Text = "Edit";
+            this.btnEditClient.UseVisualStyleBackColor = false;
+            this.btnEditClient.Click += new System.EventHandler(this.btnEditClient_Click);
+            //
+            // btnDeleteClient
+            //
+            this.btnDeleteClient.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnDeleteClient.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDeleteClient.Enabled = false;
+            this.btnDeleteClient.FlatAppearance.BorderSize = 0;
+            this.btnDeleteClient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeleteClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnDeleteClient.ForeColor = System.Drawing.Color.White;
+            this.btnDeleteClient.Location = new System.Drawing.Point(255, 15);
+            this.btnDeleteClient.Name = "btnDeleteClient";
+            this.btnDeleteClient.Size = new System.Drawing.Size(110, 38);
+            this.btnDeleteClient.TabIndex = 2;
+            this.btnDeleteClient.Text = "Delete";
+            this.btnDeleteClient.UseVisualStyleBackColor = false;
+            this.btnDeleteClient.Click += new System.EventHandler(this.btnDeleteClient_Click);
+            //
+            // dgvClients
+            //
+            this.dgvClients.AllowUserToAddRows = false;
+            this.dgvClients.AllowUserToDeleteRows = false;
+            this.dgvClients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvClients.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvClients.BackgroundColor = System.Drawing.Color.White;
+            this.dgvClients.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvClients.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.dgvClients.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dgvClients.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvClients.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvClients.Location = new System.Drawing.Point(10, 65);
+            this.dgvClients.MultiSelect = false;
+            this.dgvClients.Name = "dgvClients";
+            this.dgvClients.ReadOnly = true;
+            this.dgvClients.RowHeadersVisible = false;
+            this.dgvClients.RowTemplate.Height = 28;
+            this.dgvClients.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvClients.Size = new System.Drawing.Size(975, 490);
+            this.dgvClients.TabIndex = 3;
+            this.dgvClients.SelectionChanged += new System.EventHandler(this.dgvClients_SelectionChanged);
+            //
+            // pnlClientForm
+            //
+            this.pnlClientForm.BackColor = System.Drawing.Color.FromArgb(240, 244, 248);
+            this.pnlClientForm.Controls.Add(this.lblClientLastName);
+            this.pnlClientForm.Controls.Add(this.txtClientLastName);
+            this.pnlClientForm.Controls.Add(this.lblClientFirstName);
+            this.pnlClientForm.Controls.Add(this.txtClientFirstName);
+            this.pnlClientForm.Controls.Add(this.lblClientPhone);
+            this.pnlClientForm.Controls.Add(this.txtClientPhone);
+            this.pnlClientForm.Controls.Add(this.lblClientEmail);
+            this.pnlClientForm.Controls.Add(this.txtClientEmail);
+            this.pnlClientForm.Controls.Add(this.btnSaveClient);
+            this.pnlClientForm.Controls.Add(this.btnCancelClient);
+            this.pnlClientForm.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlClientForm.Location = new System.Drawing.Point(0, 570);
+            this.pnlClientForm.Name = "pnlClientForm";
+            this.pnlClientForm.Size = new System.Drawing.Size(1000, 130);
+            this.pnlClientForm.TabIndex = 4;
+            this.pnlClientForm.Visible = false;
+            //
+            // lblClientLastName
+            //
+            this.lblClientLastName.AutoSize = true;
+            this.lblClientLastName.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblClientLastName.Location = new System.Drawing.Point(15, 15);
+            this.lblClientLastName.Name = "lblClientLastName";
+            this.lblClientLastName.TabIndex = 0;
+            this.lblClientLastName.Text = "Last name:";
+            //
+            // txtClientLastName
+            //
+            this.txtClientLastName.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtClientLastName.Location = new System.Drawing.Point(15, 35);
+            this.txtClientLastName.Name = "txtClientLastName";
+            this.txtClientLastName.Size = new System.Drawing.Size(180, 23);
+            this.txtClientLastName.TabIndex = 1;
+            //
+            // lblClientFirstName
+            //
+            this.lblClientFirstName.AutoSize = true;
+            this.lblClientFirstName.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblClientFirstName.Location = new System.Drawing.Point(210, 15);
+            this.lblClientFirstName.Name = "lblClientFirstName";
+            this.lblClientFirstName.TabIndex = 2;
+            this.lblClientFirstName.Text = "First name:";
+            //
+            // txtClientFirstName
+            //
+            this.txtClientFirstName.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtClientFirstName.Location = new System.Drawing.Point(210, 35);
+            this.txtClientFirstName.Name = "txtClientFirstName";
+            this.txtClientFirstName.Size = new System.Drawing.Size(180, 23);
+            this.txtClientFirstName.TabIndex = 3;
+            //
+            // lblClientPhone
+            //
+            this.lblClientPhone.AutoSize = true;
+            this.lblClientPhone.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblClientPhone.Location = new System.Drawing.Point(405, 15);
+            this.lblClientPhone.Name = "lblClientPhone";
+            this.lblClientPhone.TabIndex = 4;
+            this.lblClientPhone.Text = "Phone:";
+            //
+            // txtClientPhone
+            //
+            this.txtClientPhone.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtClientPhone.Location = new System.Drawing.Point(405, 35);
+            this.txtClientPhone.Name = "txtClientPhone";
+            this.txtClientPhone.Size = new System.Drawing.Size(180, 23);
+            this.txtClientPhone.TabIndex = 5;
+            //
+            // lblClientEmail
+            //
+            this.lblClientEmail.AutoSize = true;
+            this.lblClientEmail.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblClientEmail.Location = new System.Drawing.Point(600, 15);
+            this.lblClientEmail.Name = "lblClientEmail";
+            this.lblClientEmail.TabIndex = 6;
+            this.lblClientEmail.Text = "Email:";
+            //
+            // txtClientEmail
+            //
+            this.txtClientEmail.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtClientEmail.Location = new System.Drawing.Point(600, 35);
+            this.txtClientEmail.Name = "txtClientEmail";
+            this.txtClientEmail.Size = new System.Drawing.Size(220, 23);
+            this.txtClientEmail.TabIndex = 7;
+            //
+            // btnSaveClient
+            //
+            this.btnSaveClient.BackColor = System.Drawing.Color.FromArgb(55, 71, 79);
+            this.btnSaveClient.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSaveClient.FlatAppearance.BorderSize = 0;
+            this.btnSaveClient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSaveClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSaveClient.ForeColor = System.Drawing.Color.White;
+            this.btnSaveClient.Location = new System.Drawing.Point(840, 75);
+            this.btnSaveClient.Name = "btnSaveClient";
+            this.btnSaveClient.Size = new System.Drawing.Size(110, 35);
+            this.btnSaveClient.TabIndex = 9;
+            this.btnSaveClient.Text = "Save";
+            this.btnSaveClient.UseVisualStyleBackColor = false;
+            this.btnSaveClient.Click += new System.EventHandler(this.btnSaveClient_Click);
+            //
+            // btnCancelClient
+            //
+            this.btnCancelClient.BackColor = System.Drawing.Color.FromArgb(120, 144, 156);
+            this.btnCancelClient.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCancelClient.FlatAppearance.BorderSize = 0;
+            this.btnCancelClient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelClient.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnCancelClient.ForeColor = System.Drawing.Color.White;
+            this.btnCancelClient.Location = new System.Drawing.Point(720, 75);
+            this.btnCancelClient.Name = "btnCancelClient";
+            this.btnCancelClient.Size = new System.Drawing.Size(110, 35);
+            this.btnCancelClient.TabIndex = 8;
+            this.btnCancelClient.Text = "Cancel";
+            this.btnCancelClient.UseVisualStyleBackColor = false;
+            this.btnCancelClient.Click += new System.EventHandler(this.btnCancelClient_Click);
             //
             // pnlRequests
             //
@@ -482,9 +698,13 @@ namespace RealEstateAgency
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropArea)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPropPrice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClients)).EndInit();
             this.pnlPropertyForm.ResumeLayout(false);
             this.pnlPropertyForm.PerformLayout();
+            this.pnlClientForm.ResumeLayout(false);
+            this.pnlClientForm.PerformLayout();
             this.pnlProperties.ResumeLayout(false);
+            this.pnlClients.ResumeLayout(false);
             this.pnlSidebar.ResumeLayout(false);
             this.pnlContent.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -521,6 +741,21 @@ namespace RealEstateAgency
         private System.Windows.Forms.Button btnSaveProperty;
         private System.Windows.Forms.Button btnCancelProperty;
         private System.Windows.Forms.Panel pnlClients;
+        private System.Windows.Forms.Button btnAddClient;
+        private System.Windows.Forms.Button btnEditClient;
+        private System.Windows.Forms.Button btnDeleteClient;
+        private System.Windows.Forms.DataGridView dgvClients;
+        private System.Windows.Forms.Panel pnlClientForm;
+        private System.Windows.Forms.Label lblClientLastName;
+        private System.Windows.Forms.TextBox txtClientLastName;
+        private System.Windows.Forms.Label lblClientFirstName;
+        private System.Windows.Forms.TextBox txtClientFirstName;
+        private System.Windows.Forms.Label lblClientPhone;
+        private System.Windows.Forms.TextBox txtClientPhone;
+        private System.Windows.Forms.Label lblClientEmail;
+        private System.Windows.Forms.TextBox txtClientEmail;
+        private System.Windows.Forms.Button btnSaveClient;
+        private System.Windows.Forms.Button btnCancelClient;
         private System.Windows.Forms.Panel pnlRequests;
         private System.Windows.Forms.Panel pnlOffers;
     }

@@ -8,9 +8,13 @@ namespace RealEstateAgency
     public partial class MainForm : Form
     {
         private readonly PropertyRepository _propertyRepository = new PropertyRepository();
+        private readonly ClientRepository   _clientRepository   = new ClientRepository();
 
         private Property _selectedProperty = null;
         private bool _isAddingProperty = false;
+
+        private Client _selectedClient = null;
+        private bool _isAddingClient = false;
 
         public MainForm()
         {
@@ -19,13 +23,11 @@ namespace RealEstateAgency
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // Filter dropdown
             cmbFilterType.Items.Add("All");
             foreach (var type in Enum.GetValues(typeof(PropertyType)))
                 cmbFilterType.Items.Add(type);
             cmbFilterType.SelectedIndex = 0;
 
-            // Property form dropdowns
             foreach (var type in Enum.GetValues(typeof(PropertyType)))
                 cmbPropType.Items.Add(type);
             foreach (var type in Enum.GetValues(typeof(TransactionType)))
@@ -34,6 +36,7 @@ namespace RealEstateAgency
             ShowPanel(pnlProperties);
             SetActiveButton(btnProperties);
             RefreshProperties();
+            RefreshClients();
         }
 
         // ── NAVIGATION ────────────────────────────────────────────────
@@ -66,6 +69,7 @@ namespace RealEstateAgency
         {
             ShowPanel(pnlClients);
             SetActiveButton(btnClients);
+            pnlClientForm.Visible = false;
         }
 
         private void btnRequests_Click(object sender, EventArgs e)
@@ -216,6 +220,131 @@ namespace RealEstateAgency
             numPropArea.Value = (decimal)property.Area;
             numPropPrice.Value = property.Price;
             cmbPropTransaction.SelectedItem = property.TransactionType;
+        }
+
+        // ── CLIENTS ────────────────────────────────────────────────
+
+        private void RefreshClients()
+        {
+            dgvClients.DataSource = _clientRepository.GetAll();
+
+            if (dgvClients.Columns.Contains("Id"))
+                dgvClients.Columns["Id"].Visible = false;
+            if (dgvClients.Columns.Contains("FullName"))
+                dgvClients.Columns["FullName"].Visible = false;
+
+            btnEditClient.Enabled = dgvClients.SelectedRows.Count > 0;
+            btnDeleteClient.Enabled = dgvClients.SelectedRows.Count > 0;
+        }
+
+        private void dgvClients_SelectionChanged(object sender, EventArgs e)
+        {
+            bool hasSelection = dgvClients.SelectedRows.Count > 0;
+            btnEditClient.Enabled = hasSelection;
+            btnDeleteClient.Enabled = hasSelection;
+        }
+
+        private void btnAddClient_Click(object sender, EventArgs e)
+        {
+            _isAddingClient = true;
+            _selectedClient = null;
+            ClearClientForm();
+            pnlClientForm.Visible = true;
+        }
+
+        private void btnEditClient_Click(object sender, EventArgs e)
+        {
+            _isAddingClient = false;
+            _selectedClient = dgvClients.SelectedRows[0].DataBoundItem as Client;
+            PopulateClientForm(_selectedClient);
+            pnlClientForm.Visible = true;
+        }
+
+        private void btnDeleteClient_Click(object sender, EventArgs e)
+        {
+            var client = dgvClients.SelectedRows[0].DataBoundItem as Client;
+            if (MessageBox.Show(
+                $"Are you sure you want to delete client {client.LastName} {client.FirstName}?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _clientRepository.Delete(client.Id);
+                RefreshClients();
+            }
+        }
+
+        private void btnSaveClient_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtClientLastName.Text))
+            {
+                MessageBox.Show("Last name is required!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(txtClientFirstName.Text))
+            {
+                MessageBox.Show("First name is required!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(txtClientPhone.Text))
+            {
+                MessageBox.Show("Phone is required!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (txtClientPhone.Text.Trim().Length < 10)
+            {
+                MessageBox.Show("Phone must be at least 10 characters!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!txtClientEmail.Text.Contains("@") || !txtClientEmail.Text.Contains("."))
+            {
+                MessageBox.Show("Invalid email address!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var client = new Client
+            {
+                LastName = txtClientLastName.Text.Trim(),
+                FirstName = txtClientFirstName.Text.Trim(),
+                Phone = txtClientPhone.Text.Trim(),
+                Email = txtClientEmail.Text.Trim()
+            };
+
+            if (_isAddingClient)
+            {
+                client.Id = Guid.NewGuid();
+                _clientRepository.Add(client);
+            }
+            else
+            {
+                client.Id = _selectedClient.Id;
+                _clientRepository.Update(client);
+            }
+
+            pnlClientForm.Visible = false;
+            RefreshClients();
+        }
+
+        private void btnCancelClient_Click(object sender, EventArgs e)
+        {
+            pnlClientForm.Visible = false;
+            ClearClientForm();
+        }
+
+        private void ClearClientForm()
+        {
+            txtClientLastName.Clear();
+            txtClientFirstName.Clear();
+            txtClientPhone.Clear();
+            txtClientEmail.Clear();
+        }
+
+        private void PopulateClientForm(Client client)
+        {
+            txtClientLastName.Text = client.LastName;
+            txtClientFirstName.Text = client.FirstName;
+            txtClientPhone.Text = client.Phone;
+            txtClientEmail.Text = client.Email;
         }
     }
 }
