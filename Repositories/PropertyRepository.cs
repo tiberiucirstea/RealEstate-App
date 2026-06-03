@@ -110,5 +110,37 @@ namespace RealEstateAgency.Repositories
                 }
             }
         }
+
+        public void DeleteWithOffers(Guid id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (var command = new SqlCommand("DELETE FROM Offers WHERE PropertyId = @id", connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        using (var command = new SqlCommand("DELETE FROM Properties WHERE Id = @id", connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
     }
 }

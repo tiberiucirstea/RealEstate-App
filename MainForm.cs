@@ -33,42 +33,53 @@ namespace RealEstateAgency
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            cmbFilterType.Items.Add("All");
-            foreach (var type in Enum.GetValues(typeof(PropertyType)))
-                cmbFilterType.Items.Add(type);
-            cmbFilterType.SelectedIndex = 0;
+            try
+            {
+                cmbFilterType.Items.Add("All");
+                foreach (var type in Enum.GetValues(typeof(PropertyType)))
+                    cmbFilterType.Items.Add(type);
+                cmbFilterType.SelectedIndex = 0;
 
-            foreach (var type in Enum.GetValues(typeof(PropertyType)))
-                cmbPropType.Items.Add(type);
-            foreach (var type in Enum.GetValues(typeof(TransactionType)))
-                cmbPropTransaction.Items.Add(type);
+                foreach (var type in Enum.GetValues(typeof(PropertyType)))
+                    cmbPropType.Items.Add(type);
+                foreach (var type in Enum.GetValues(typeof(TransactionType)))
+                    cmbPropTransaction.Items.Add(type);
 
-            cmbFilterStatus.Items.Add("All");
-            foreach (var status in Enum.GetValues(typeof(RequestStatus)))
-                cmbFilterStatus.Items.Add(status);
-            cmbFilterStatus.SelectedIndex = 0;
+                cmbFilterStatus.Items.Add("All");
+                foreach (var status in Enum.GetValues(typeof(RequestStatus)))
+                    cmbFilterStatus.Items.Add(status);
+                cmbFilterStatus.SelectedIndex = 0;
 
-            foreach (var type in Enum.GetValues(typeof(PropertyType)))
-                cmbReqPropType.Items.Add(type);
-            foreach (var type in Enum.GetValues(typeof(TransactionType)))
-                cmbReqTransaction.Items.Add(type);
-            foreach (var status in Enum.GetValues(typeof(RequestStatus)))
-                cmbReqStatus.Items.Add(status);
+                foreach (var type in Enum.GetValues(typeof(PropertyType)))
+                    cmbReqPropType.Items.Add(type);
+                foreach (var type in Enum.GetValues(typeof(TransactionType)))
+                    cmbReqTransaction.Items.Add(type);
+                foreach (var status in Enum.GetValues(typeof(RequestStatus)))
+                    cmbReqStatus.Items.Add(status);
 
-            cmbFilterOfferStatus.Items.Add("All");
-            foreach (var status in Enum.GetValues(typeof(OfferStatus)))
-                cmbFilterOfferStatus.Items.Add(status);
-            cmbFilterOfferStatus.SelectedIndex = 0;
+                cmbFilterOfferStatus.Items.Add("All");
+                foreach (var status in Enum.GetValues(typeof(OfferStatus)))
+                    cmbFilterOfferStatus.Items.Add(status);
+                cmbFilterOfferStatus.SelectedIndex = 0;
 
-            foreach (var status in Enum.GetValues(typeof(OfferStatus)))
-                cmbOfferStatus.Items.Add(status);
+                foreach (var status in Enum.GetValues(typeof(OfferStatus)))
+                    cmbOfferStatus.Items.Add(status);
 
-            ShowPanel(pnlProperties);
-            SetActiveButton(btnProperties);
-            RefreshProperties();
-            RefreshClients();
-            RefreshRequests();
-            RefreshOffers();
+                ShowPanel(pnlProperties);
+                SetActiveButton(btnProperties);
+                RefreshProperties();
+                RefreshClients();
+                RefreshRequests();
+                RefreshOffers();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Could not load data from the database.\n\n" + ex.Message,
+                    "Database Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         // ── NAVIGATION ────────────────────────────────────────────────
@@ -176,12 +187,7 @@ namespace RealEstateAgency
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                var offers = _offerRepository.GetAll()
-                    .FindAll(o => o.PropertyId == property.Id);
-                foreach (var offer in offers)
-                    _offerRepository.Delete(offer.Id);
-
-                _propertyRepository.Delete(property.Id);
+                _propertyRepository.DeleteWithOffers(property.Id);
                 RefreshProperties();
                 RefreshOffers();
             }
@@ -311,18 +317,9 @@ namespace RealEstateAgency
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                var offers = _offerRepository.GetAll()
-                    .FindAll(o => o.ClientId == client.Id);
-                foreach (var offer in offers)
-                    _offerRepository.Delete(offer.Id);
-
-                var requests = _requestRepository.GetAll()
-                    .FindAll(r => r.ClientId == client.Id);
-                foreach (var request in requests)
-                    _requestRepository.Delete(request.Id);
-
-                _clientRepository.Delete(client.Id);
+                _clientRepository.DeleteWithRelatedData(client.Id);
                 RefreshClients();
+                RefreshProperties();
                 RefreshOffers();
                 RefreshRequests();
             }
@@ -670,6 +667,66 @@ namespace RealEstateAgency
             _offerClient = ((ClientListItem)lstOfferClients.SelectedItem).Client;
         }
 
+        private void LoadOfferProperties(bool onlyAvailable)
+        {
+            cmbOfferProperty.Items.Clear();
+            foreach (var property in _propertyRepository.GetAll())
+            {
+                if (onlyAvailable && property.Status != PropertyStatus.Available)
+                    continue;
+
+                cmbOfferProperty.Items.Add(new PropertyListItem
+                {
+                    Display = property.Address + ", " + property.City,
+                    Property = property
+                });
+            }
+
+            cmbOfferProperty.DisplayMember = "Display";
+            if (cmbOfferProperty.Items.Count > 0)
+                cmbOfferProperty.SelectedIndex = 0;
+        }
+
+        private bool IsMatchingActiveRequest(Request request, Property property, Guid clientId)
+        {
+            return request.ClientId == clientId &&
+                   request.Status == RequestStatus.Active &&
+                   request.PropertyType == property.Type &&
+                   request.TransactionType == property.TransactionType &&
+                   request.MaxBudget >= property.Price &&
+                   string.Equals(request.City, property.City, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private int ResolveMatchingActiveRequests(Property property, Guid clientId)
+        {
+            var matchingRequests = _requestRepository.GetAll()
+                .FindAll(r => IsMatchingActiveRequest(r, property, clientId));
+
+            foreach (var request in matchingRequests)
+            {
+                request.Status = RequestStatus.Resolved;
+                _requestRepository.Update(request);
+            }
+
+            return matchingRequests.Count;
+        }
+
+        private bool ShouldApplyAcceptedEffects(Offer previousOffer, Offer offer)
+        {
+            return offer.Status == OfferStatus.Accepted &&
+                   (previousOffer == null ||
+                    previousOffer.Status != OfferStatus.Accepted ||
+                    previousOffer.PropertyId != offer.PropertyId ||
+                    previousOffer.ClientId != offer.ClientId);
+        }
+
+        private bool ShouldReleasePreviousProperty(Offer previousOffer, Offer offer)
+        {
+            return previousOffer != null &&
+                   previousOffer.Status == OfferStatus.Accepted &&
+                   (offer.Status != OfferStatus.Accepted || previousOffer.PropertyId != offer.PropertyId);
+        }
+
         private void btnAddOffer_Click(object sender, EventArgs e)
         {
             _isAddingOffer = true;
@@ -677,18 +734,13 @@ namespace RealEstateAgency
             _offerClient = null;
             ClearOfferForm();
             ShowClientsForOffer("");
-            cmbOfferProperty.Items.Clear();
-            foreach (var property in _propertyRepository.GetAll())
+            LoadOfferProperties(true);
+            if (cmbOfferProperty.Items.Count == 0)
             {
-                cmbOfferProperty.Items.Add(new PropertyListItem
-                {
-                    Display = property.Address + ", " + property.City,
-                    Property = property
-                });
+                MessageBox.Show("There are no available properties for a new offer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            cmbOfferProperty.DisplayMember = "Display";
-            if (cmbOfferProperty.Items.Count > 0)
-                cmbOfferProperty.SelectedIndex = 0;
+
             pnlOfferForm.Visible = true;
         }
 
@@ -698,16 +750,7 @@ namespace RealEstateAgency
             _selectedOffer = dgvOffers.SelectedRows[0].DataBoundItem as Offer;
             _offerClient = _selectedOffer.Client;
 
-            cmbOfferProperty.Items.Clear();
-            foreach (var property in _propertyRepository.GetAll())
-            {
-                cmbOfferProperty.Items.Add(new PropertyListItem
-                {
-                    Display = property.Address + ", " + property.City,
-                    Property = property
-                });
-            }
-            cmbOfferProperty.DisplayMember = "Display";
+            LoadOfferProperties(false);
 
             PopulateOfferForm(_selectedOffer);
             pnlOfferForm.Visible = true;
@@ -723,7 +766,11 @@ namespace RealEstateAgency
                 MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _offerRepository.Delete(offer.Id);
+                if (offer.Status == OfferStatus.Accepted)
+                    _propertyRepository.UpdateStatus(offer.PropertyId, PropertyStatus.Available);
+
                 RefreshOffers();
+                RefreshProperties();
             }
         }
 
@@ -742,6 +789,18 @@ namespace RealEstateAgency
 
             var selectedProperty = ((PropertyListItem)cmbOfferProperty.SelectedItem).Property;
             var newStatus = (OfferStatus)cmbOfferStatus.SelectedItem;
+            var previousOffer = _isAddingOffer ? null : _selectedOffer;
+            var keepsSameAcceptedProperty = previousOffer != null &&
+                                            previousOffer.Status == OfferStatus.Accepted &&
+                                            previousOffer.PropertyId == selectedProperty.Id;
+
+            if (newStatus == OfferStatus.Accepted &&
+                selectedProperty.Status != PropertyStatus.Available &&
+                !keepsSameAcceptedProperty)
+            {
+                MessageBox.Show("This property is not available for an accepted offer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             var offer = new Offer
             {
@@ -764,23 +823,20 @@ namespace RealEstateAgency
                 _offerRepository.Update(offer);
             }
 
-            if (newStatus == OfferStatus.Accepted)
+            if (ShouldReleasePreviousProperty(previousOffer, offer))
+                _propertyRepository.UpdateStatus(previousOffer.PropertyId, PropertyStatus.Available);
+
+            if (ShouldApplyAcceptedEffects(previousOffer, offer))
             {
                 var propertyStatus = selectedProperty.TransactionType == TransactionType.Sale
                     ? PropertyStatus.Sold
                     : PropertyStatus.Rented;
                 _propertyRepository.UpdateStatus(selectedProperty.Id, propertyStatus);
 
-                var activeRequests = _requestRepository.GetAll()
-                    .FindAll(r => r.ClientId == _offerClient.Id && r.Status == RequestStatus.Active);
-                foreach (var request in activeRequests)
-                {
-                    request.Status = RequestStatus.Resolved;
-                    _requestRepository.Update(request);
-                }
+                var resolvedRequests = ResolveMatchingActiveRequests(selectedProperty, _offerClient.Id);
 
                 MessageBox.Show(
-                    $"Offer accepted!\nProperty has been marked as {propertyStatus}.\nClient's active requests have been resolved.",
+                    $"Offer accepted!\nProperty has been marked as {propertyStatus}.\n{resolvedRequests} matching active request(s) have been resolved.",
                     "Success",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);

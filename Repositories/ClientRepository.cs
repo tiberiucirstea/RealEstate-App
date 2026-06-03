@@ -105,5 +105,55 @@ namespace RealEstateAgency.Repositories
                 }
             }
         }
+
+        public void DeleteWithRelatedData(Guid id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (var command = new SqlCommand(
+                            "UPDATE Properties SET Status = @availableStatus " +
+                            "WHERE Id IN (SELECT PropertyId FROM Offers WHERE ClientId = @id AND Status = @acceptedStatus)",
+                            connection,
+                            transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+                            command.Parameters.AddWithValue("@availableStatus", PropertyStatus.Available.ToString());
+                            command.Parameters.AddWithValue("@acceptedStatus", OfferStatus.Accepted.ToString());
+                            command.ExecuteNonQuery();
+                        }
+
+                        using (var command = new SqlCommand("DELETE FROM Offers WHERE ClientId = @id", connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        using (var command = new SqlCommand("DELETE FROM Requests WHERE ClientId = @id", connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        using (var command = new SqlCommand("DELETE FROM Clients WHERE Id = @id", connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
     }
 }
